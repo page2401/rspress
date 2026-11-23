@@ -1,0 +1,21 @@
+{
+  "name": "@page2401/rspress",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "SSG Benchmark Submodule — Rspress v2 (2.1.4 · Rspack + _meta.json + KaTeX + Mermaid 12)",
+  "scripts": {
+    "dev": "rspress dev",
+    "build": "rspress build",
+    "preview": "rspress preview"
+  },
+  "dependencies": {
+    "@rspress/core": "2.1.4",
+    "katex": "0.19.1",
+    "mermaid": "12.3.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "rspress-plugin-katex": "1.0.1",
+    "rspress-plugin-mermaid": "2.0.0"
+  }
+}

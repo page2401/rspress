@@ -1,0 +1,12 @@
+[
+  {
+    "type": "file",
+    "name": "01-order-and-url",
+    "label": "嵌套子页 A：排序前缀与 URL 纯净度权衡"
+  },
+  {
+    "type": "file",
+    "name": "02-sidebar-sync",
+    "label": "嵌套子页 B：多级子目录与侧边栏同步机制"
+  }
+]

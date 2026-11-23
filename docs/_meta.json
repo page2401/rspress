@@ -1,0 +1,29 @@
+[
+  {
+    "type": "file",
+    "name": "index",
+    "label": "00. Rspress v2 基准总览"
+  },
+  {
+    "type": "file",
+    "name": "01-annotations",
+    "label": "01. 专属标注与元数据"
+  },
+  {
+    "type": "file",
+    "name": "02-diagrams",
+    "label": "02. 流程图与时序图"
+  },
+  {
+    "type": "file",
+    "name": "03-math",
+    "label": "03. 数学公式排版"
+  },
+  {
+    "type": "dir",
+    "name": "04-directory",
+    "label": "04. 目录结构与路由取舍",
+    "collapsible": true,
+    "collapsed": false
+  }
+]

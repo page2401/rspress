@@ -1,0 +1,14 @@
+[
+  {
+    "type": "file",
+    "name": "index",
+    "label": "04. 目录结构总览"
+  },
+  {
+    "type": "dir",
+    "name": "nested",
+    "label": "嵌套子目录实测 (_meta.json)",
+    "collapsible": true,
+    "collapsed": false
+  }
+]
