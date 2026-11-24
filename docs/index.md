@@ -15,6 +15,7 @@ description: "锁定版本 @rspress/core@2.1.4 · Rust Rspack + _meta.json + KaT
 | [`02. 流程图与时序图`](./02-diagrams.md) | 流程图与时序图 | 接入 `rspress-plugin-mermaid@2.0.0` + `mermaid@12.3.0`，零正文改动渲染复杂流程图与时序图 |
 | [`03. 数学公式排版`](./03-math.md) | 数学公式排版 | 接入 `rspress-plugin-katex@1.0.1` + 本地打包 `katex@0.19.1` 样式与字体，构建期编译 HTML 公式结构 |
 | [`04. 目录结构与路由取舍`](./04-directory/index.md) | 目录结构与 `_meta.json` | `root: 'docs'` 隔离 + 各层级 `_meta.json` 就近声明章节顺序与中文分组标题 |
+| [`05. 高阶代码块与语法高亮`](./05-code-blocks.mdx) | Shiki 4 代码块与 `<Tabs>` | 开箱集成 `title="..."`、`{3,7-9}` 与保留词法着色的 `// [!code ++]` Diff；`.mdx` 下调用 `@rspress/core/theme` `<Tabs>` |
 
 ## 子模块精确锁定版本档案
 

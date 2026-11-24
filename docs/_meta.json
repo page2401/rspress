@@ -25,5 +25,10 @@
     "label": "04. 目录结构与路由取舍",
     "collapsible": true,
     "collapsed": false
+  },
+  {
+    "type": "file",
+    "name": "05-code-blocks",
+    "label": "05. 高阶代码块与语法高亮"
   }
 ]

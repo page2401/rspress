@@ -1,4 +1,5 @@
 import { defineConfig } from '@rspress/core'
+import { transformerCompatibleMetaHighlight } from '@rspress/core/shiki-transformers'
 import pluginKatex from 'rspress-plugin-katex'
 import pluginMermaid from 'rspress-plugin-mermaid'
 
@@ -40,6 +41,11 @@ export default defineConfig({
   route: {
     cleanUrls: true,
   },
+  markdown: {
+    shiki: {
+      transformers: [transformerCompatibleMetaHighlight()],
+    },
+  },
   plugins: [
     pluginKatex(),
     {
@@ -67,6 +73,10 @@ export default defineConfig({
       {
         text: '04. 目录结构',
         link: '/04-directory/',
+      },
+      {
+        text: '05. 代码高亮',
+        link: '/05-code-blocks',
       },
       {
         text: '← 返回对比总站',
