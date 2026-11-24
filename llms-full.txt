@@ -1,0 +1,402 @@
+---
+url: /rspress/01-annotations.md
+---
+
+> For AI agents: the complete documentation index is available at /rspress/llms.txt, the full documentation bundle is available at /rspress/llms-full.txt.
+
+# 01. 专属标注与元数据（Rspress v2 派生版）
+
+不同静态网站生成器对“提示框 / 标注（Callouts / Admonitions）”和页面元数据的语法约定存在显著分歧。本文件由原始 GFM 母版派生适配至 **Rspress v2 (`2.1.4`)**。
+
+## 1. Frontmatter 元数据与 MDX 3 编译机制
+
+Rspress v2 底层采用标准 Unified + MDX 3 编译管线（配合 Rust Rspack 极速打包），在保持宽松 YAML Frontmatter 的同时遵循 MDX 3 JSX 语法边界：
+
+- **当前页标题字段**：`title: "01. 专属标注与元数据"`
+- **页面摘要字段**：`description: "..."`（同时支持 `overview`、`pageType`、`outline` 等页面级控制项）
+- **派生观察点**：与 Docusaurus v3 类似，MDX 3 会将正文中未包裹反引号的裸 `<id>` 或 `{expr}` 视作 JSX 语法；但在提示框方面，Rspress 内核同时兼容三冒号容器与 GitHub 原生警报。
+
+## 2. 标准提示语义块（Rspress Container Directives）
+
+Rspress 原生支持 `:::note`、`:::tip`、`:::info`、`:::warning`、`:::danger`、`:::details` 容器语法，支持通过 `{title="..."}` 或紧随其后的标题声明自定义标题：
+
+:::note
+默认信息提示块：静态站点对比平台的每个子模块均独立维护 `main`（源码）与 `page`（构建产物）双分支，互不污染提交历史。
+:::
+
+:::tip\{title="性能优化建议"}
+在派生到三冒号体系时，Rspress 支持 `:::tip{title="性能优化建议"}` 属性语法或空格自定义标题，同时兼容内部行内代码与加粗排版。
+:::
+
+:::warning\{title="版本边界注意"}
+注意区分各派系关键字命名——Rspress、Docusaurus v3、VitePress 与 VuePress 均支持 `warning`，Starlight 使用 `caution`，Docsify 传统语法则使用 `!>`。
+:::
+
+:::danger\{title="不可逆分支覆盖警告"}
+自动化流水线在向 `page` 分支推送构建产物时会启用 `force_orphan: true`，切勿在 `page` 分支直接手工修改代码！
+:::
+
+## 3. 可折叠详情容器（原生 HTML `<details>`）
+
+标准 CommonMark / GFM 使用原生 `<details>` 与 `<summary>` 标签实现折叠，Rspress 同样支持原样渲染并解析内部空行后的 Markdown 与公式：
+
+<details>
+<summary>点击展开查看 Rspress 容器与折叠语法源码结构</summary>
+
+```markdown
+:::tip{title="性能优化建议"}
+Rspress 同时支持三冒号容器与标准 GitHub Alerts 语法。
+:::
+```
+
+除了代码块，折叠容器内同样支持列表、表格与数学公式 $f(x) = x^2 + 1$。
+
+</details>
+
+## 4. GitHub 风格引用警报（GFM Alerts）跨框架直通测试
+
+以下三段在**所有派生子模块中均保持一字不改**，用于测试：如果不做任何方言改写、直接把母版 `.md` 丢进目标生成器，哪些框架能原样渲染，哪些会退化为普通引用文本：
+
+> \[!NOTE]
+> 这是一段标准的 GitHub Flavored Markdown `[!NOTE]` 警报文本，用于检验各生成器对母版语法的零改造直通能力。
+
+> \[!IMPORTANT]
+> 跨平台迁移 Markdown 文档时，是否原生兼容 `> [!IMPORTANT]` 与 `> [!WARNING]` 直接决定了母版文档的派生改造成本。
+
+> \[!CAUTION]
+> 若目标生成器未内置 GFM Alert 解析器（如 VuePress v1、Starlight 默认配置、Docsify v4 旧插件），上方标记会退化为普通引用块并原样露出 `[!CAUTION]` 字符串。
+
+
+
+---
+url: /rspress/02-diagrams.md
+---
+
+> For AI agents: the complete documentation index is available at /rspress/llms.txt, the full documentation bundle is available at /rspress/llms-full.txt.
+
+# 02. 流程图与时序图（Rspress Mermaid 基准）
+
+Rspress v2 通过接入 `rspress-plugin-mermaid@2.0.0`（底层驱动最新 `mermaid@12.3.0`），无需修改母版中的任何 ` ```mermaid ` 围栏代码块即可完成构建期转换与客户端矢量渲染。
+
+## 1. 复杂子图与架构流程图（`flowchart TD`）
+
+测试中文节点标签、子图嵌套（`subgraph`）、虚线边与条件分支：
+
+```mermaid
+flowchart TD
+    subgraph MainRepo["主仓库 page2401.github.io"]
+        Master["母版 docs/*.md (Pure GFM)"]
+        SubPtr["Git Submodule 指针 (sites/*)"]
+        Workbench["对比工作台源码 (main)"]
+    end
+
+    subgraph SubRepo["各独立派生子仓库 (sites/<id>)"]
+        SrcBranch["main 分支: 框架配置 + 派生适配版 *.md"]
+        Actions{"GitHub Actions 构建"}
+        PageBranch["page 孤儿分支: 纯静态产物 + .nojekyll"]
+        SrcBranch --> Actions
+        Actions -->|"自动构建发布"| PageBranch
+    end
+
+    Master -.->|"按各框架方言派生"| SrcBranch
+    SubPtr -.->|"跟踪 main 分支"| SrcBranch
+    Workbench -->|"对比母版与各派生版差异"| Portal["https://page.2401.xyz/"]
+    PageBranch -->|"GitHub Organization Pages"| SubSite["https://page.2401.xyz/<id>/"]
+```
+
+## 2. 编译管线交互时序图（`sequenceDiagram`）
+
+测试多参与者生命线、`alt` 分支块及激活框（`activate`/`deactivate`）：
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Author as 文档作者
+    participant Master as 主仓母版 docs/*.md
+    participant SubGit as 子模块 main 分支
+    participant CI as GitHub Actions (Node 22)
+    participant Pages as GitHub Pages (page 分支)
+
+    Author->>Master: 编写标准 GFM 基准母版
+    Master->>SubGit: 派生适配特定 SSG 版本语法
+    SubGit->>CI: 触发 deploy-page.yml 工作流
+    activate CI
+    alt 编译型 SSG (VitePress / VuePress / Starlight / Docusaurus / Rspress)
+        CI->>CI: 预编译静态 HTML + 公式 + 图表挂载点
+    else 运行时引擎 (Docsify v4 / v5)
+        CI->>CI: 组装原始 *.md + _sidebar.md + 锁定版本 vendor
+    end
+    CI->>Pages: force_orphan 推送至孤儿分支 page
+    deactivate CI
+    Pages-->>Author: 同源子路径 /<id>/ 即刻生效
+```
+
+## 3. 子模块同步状态机（`stateDiagram-v2`）
+
+测试状态机语法与状态迁移说明标签：
+
+```mermaid
+stateDiagram-v2
+    [*] --> MasterEdited: 更新主仓母版 docs/*.md
+    MasterEdited --> SubmoduleDerived: 同步派生适配至各子模块 *.md
+    SubmoduleDerived --> SubmodulePushed: 子模块 commit & push origin main
+    SubmodulePushed --> PageDeploying: 子仓库 Actions 自动更新 page 分支
+    SubmodulePushed --> MainRepoUpdated: 主仓库更新子模块指针并构建对比数据
+    PageDeploying --> LiveSynced: 线上渲染与母版源码差异视图全部就绪
+    MainRepoUpdated --> LiveSynced: 计算相对母版改动行数完成
+    LiveSynced --> [*]
+```
+
+
+
+---
+url: /rspress/03-math.md
+---
+
+> For AI agents: the complete documentation index is available at /rspress/llms.txt, the full documentation bundle is available at /rspress/llms-full.txt.
+
+# 03. 数学公式排版（Rspress KaTeX 基准）
+
+本页正文算例 100% 保持与母版一致的 `$...$` 行内定界符与 `$$...$$` 块级定界符，通过 `rspress-plugin-katex@1.0.1` 在构建期编译为 KaTeX HTML 结构，并通过 `globalStyles` 本地打包 `katex@0.19.1` 样式与字体资源，彻底消除外部 CDN 依赖。
+
+## 1. 行内公式与中英文混排基线对齐
+
+考察重点：行内公式在中文字号下的缩放比例、上下标是否撑乱行高，以及分数与根号在行内的紧凑度。
+
+- 质能方程 $E = mc^2$ 与欧拉恒等式 $e^\{i\pi} + 1 = 0$ 嵌入在连续中文段落中的视觉基线表现。
+- 归并排序的平均时间复杂度为 $\mathcal\{O}(n \log n)$，而空间复杂度为 $\Theta(n)$；当输入规模满足 $n \ge 2^\{16}$ 时，常数因子差异显著。
+- 贝叶斯条件概率公式行内排印：$P(A \mid B) = \frac\{P(B \mid A),P(A)}\{P(B)}$，以及带根号的欧氏距离 $d(\mathbf\{x}, \mathbf\{y}) = \sqrt\{\sum\_\{i=1}^\{n}(x_i - y_i)^2}$。
+
+## 2. 多行等式对齐推导（`aligned` 环境）
+
+测试 `\begin{aligned} ... \end{aligned}` 多行对齐、积分算子与括号自动缩放 `\left( ... \right)`：
+
+$$
+\begin\{aligned}
+I^2 &= \left( \int\_\{-\infty}^\{+\infty} e^\{-x^2},\mathrm\{d}x \right) \left( \int\_\{-\infty}^\{+\infty} e^\{-y^2},\mathrm\{d}y \right) \\
+&= \iint\_\{\mathbb\{R}^2} e^\{-(x^2 + y^2)},\mathrm\{d}x,\mathrm\{d}y \\
+&= \int\_\{0}^\{2\pi} \int\_\{0}^\{+\infty} e^\{-r^2} r,\mathrm\{d}r,\mathrm\{d}\theta \\
+&= 2\pi \cdot \left\[ -\frac\{1}\{2} e^\{-r^2} \right]\_\{0}^\{+\infty} = \pi \implies I = \sqrt\{\pi}
+\end\{aligned}
+$$
+
+## 3. 矩阵运算与注意力机制（`bmatrix` 环境）
+
+测试缩放点积注意力公式及矩阵乘法排版：
+
+$$
+\mathrm\{Attention}(Q, K, V) = \mathrm\{softmax}!\left(\frac\{QK^\top}\{\sqrt\{d_k}}\right)V
+$$
+
+$$
+\mathbf\{J}\_\{\mathbf\{f}}(\mathbf\{x}) =
+\begin\{bmatrix}
+\dfrac\{\partial f_1}\{\partial x_1} & \dfrac\{\partial f_1}\{\partial x_2} & \cdots & \dfrac\{\partial f_1}\{\partial x_n} \\\[6pt]
+\dfrac\{\partial f_2}\{\partial x_1} & \dfrac\{\partial f_2}\{\partial x_2} & \cdots & \dfrac\{\partial f_2}\{\partial x_n} \\\[4pt]
+\vdots & \vdots & \ddots & \vdots \\\[4pt]
+\dfrac\{\partial f_m}\{\partial x_1} & \dfrac\{\partial f_m}\{\partial x_2} & \cdots & \dfrac\{\partial f_m}\{\partial x_n}
+\end\{bmatrix}
+$$
+
+## 4. 分段函数与优化目标（`cases` 环境）
+
+测试 Huber Loss 分段函数与花括号对齐：
+
+$$
+\mathcal\{L}\_\{\delta}(y, \hat\{y}) =
+\begin\{cases}
+\dfrac\{1}\{2}(y - \hat\{y})^2, & \text\{if } |y - \hat\{y}| \le \delta, \\\[8pt]
+\delta \cdot \left(|y - \hat\{y}| - \dfrac\{1}\{2}\delta\right), & \text\{otherwise.}
+\end\{cases}
+$$
+
+## 5. 字面量美元符号 `\$` 转义边界测试
+
+在启用 `$...$` 行内数学公式后，同一段落出现两个价格数字（例如基础套餐 $29/月 与专业版 $99/月）时，若未正确转义 `\$` 会把中间的中文误解析为斜体公式；而在反引号代码片段中编写环境变量 `$HOME` 或 `awk '{print $1}'` 则应原样保留，无需反斜杠转义。
+
+
+
+---
+url: /rspress/05-code-blocks.md
+---
+
+> For AI agents: the complete documentation index is available at /rspress/llms.txt, the full documentation bundle is available at /rspress/llms-full.txt.
+
+# 05. 高阶代码块与语法高亮（Rspress v2 派生版）
+
+技术文档中超过 40% 的篇幅由代码块构成，但标准 CommonMark / GitHub Flavored Markdown 仅定义了围栏语言标识（` ```ts `），并未定义文件名标题栏、指定行高亮、带词法着色的行级 Diff 以及多语言 Tab 切换组。本页采用 `.mdx` 后缀由原始 GFM 母版派生适配至 **Rspress v2 (`2.1.4`)**，实测其内置 **Shiki 4 + `@shikijs/transformers`** 编译管线与 `@rspress/core/theme` 标签页组件。
+
+## 1. 代码块文件名标题栏与静态 Shiki 着色
+
+Rspress v2 在构建期通过 `@shikijs/rehype` 与内置 `add-title` 转换器处理代码块，只需在围栏信息串声明 `title="scripts/resolve-route.ts"` 即可生成文件名顶栏、语言角标与一键复制交互：
+
+```ts title="scripts/resolve-route.ts"
+export interface RouteContext {
+  basePath: string
+  slug: string
+  cleanUrls: boolean
+}
+
+export function formatDocRoute(ctx: RouteContext): string {
+  const prefix = ctx.basePath.endsWith('/') ? ctx.basePath : `${ctx.basePath}/`
+  const normalized = ctx.slug.replace(/^\/+|\/+$/g, '')
+  if (!normalized || normalized === 'index') return prefix
+  return ctx.cleanUrls ? `${prefix}${normalized}/` : `${prefix}${normalized}.html`
+}
+```
+
+## 2. 关键行聚焦与区间高亮（`{3,7-9}`）
+
+Rspress v2 默认启用 `transformerNotationHighlight`（`// [!code highlight]`），同时在 `@rspress/core/shiki-transformers` 中官方导出 `transformerCompatibleMetaHighlight()`：在 `rspress.config.ts` 的 `markdown.shiki.transformers` 中挂载后，即可在信息串直接使用 `{3,7-9}` 零侵入高亮纯 JSON 配置的第 `3` 行与第 `7–9` 行：
+
+```json title="benchmark.config.json" {3,7-9}
+{
+  "id": "ssg-benchmark",
+  "routeStyle": "clean",
+  "strictZeroCdn": true,
+  "markdown": {
+    "mathEngine": "katex",
+    "diagramEngine": "mermaid",
+    "lineHighlight": true,
+    "codeTransformers": ["diff", "focus"]
+  }
+}
+```
+
+## 3. 保留词法着色的代码增删对比（`[!code --]` / `[!code ++]`）
+
+得益于 `@rspress/core` 默认集成 `transformerNotationDiff`，我们无需将代码块降级为无词法高亮的 `diff` 语言，直接在 `ts` 代码块中使用 `// [!code --]` 与 `// [!code ++]` 即可同时获得红绿增删背景与完整的 TypeScript 语法高亮：
+
+```ts title="scripts/mount-subsite.ts"
+export function mountSubsite(baseDir: string, subPath: string): string | null {
+  const cleanRel = decodeURIComponent(subPath).replace(/\.\./g, '') // [!code --]
+  return `${baseDir}/${cleanRel}` // [!code --]
+  const resolvedBase = path.resolve(baseDir) // [!code ++]
+  const target = path.resolve(resolvedBase, decodeURIComponent(subPath).replace(/^\/+/, '')) // [!code ++]
+  return target.startsWith(`${resolvedBase}${path.sep}`) ? target : null // [!code ++]
+}
+```
+
+## 4. 多语言运行时命令组（`<Tabs>` + `<Tab>`）
+
+Rspress v2 根据文件扩展名决定 MDX 编译模式（`format: 'md' | 'mdx'`）：当需要在文档中引入 `@rspress/core/theme` 的 `<Tabs>` 与 `<Tab>` 组件时，只需将文件命名为 `.mdx` 并设置 `groupId` 即可实现跨页联动的命令切换栏：
+
+
+**Node.js (package.json)**
+
+```bash
+npm ci && npm run build
+```
+
+**Deno 2 (deno.json)**
+
+```bash
+deno task build
+```
+
+**Python (requirements.txt)**
+
+```bash
+pip install -r requirements.txt && sphinx-build -b dirhtml . _build/dirhtml
+```
+
+**Ruby (Gemfile)**
+
+```bash
+bundle install && bundle exec jekyll build
+```
+
+## 5. 四大底层高亮引擎能力对照小结
+
+| 高亮引擎代表                      | 典型采用框架                                                  | 构建期零运行时 JS           | 原生行号 / 行高亮                        | 保留词法着色的 Diff            |
+| :-------------------------- | :------------------------------------------------------ | :------------------- | :-------------------------------- | :---------------------- |
+| **Shiki / Expressive Code** | VitePress、Starlight、Fumadocs、Nextra、Rspress、Nuxt、Quartz | ✅ 纯静态内联样式            | ✅ `{1,3-5}` / `[!code highlight]` | ✅ `// [!code ++]`       |
+| **Prism.js**                | Docusaurus、VuePress、Eleventy (plugin)、Gatsby            | ✅ 静态 Token 类名        | ✅ `{1,3-5}` / 魔法注释                | ⚠️ 需配 diff-highlight 插件 |
+| **Pygments / Rouge**        | MkDocs Material、Sphinx、Pelican、Jekyll                   | ✅ Python/Ruby 编译直出   | ✅ `hl_lines` / `emphasize-lines`  | ⚠️ 仅标准 `diff` 块红绿       |
+| **Chroma / Giallo / hljs**  | Hugo (Go Chroma)、Zola (Rust Giallo)、mdBook (hljs)       | ✅ (mdBook 为客户端 hljs) | ✅ Hugo/Zola 原生 `hl_lines`         | ⚠️ 仅标准 `diff` 块红绿       |
+
+
+
+---
+url: /rspress/04-directory/index.md
+---
+
+> For AI agents: the complete documentation index is available at /rspress/llms.txt, the full documentation bundle is available at /rspress/llms-full.txt.
+
+# 04. 目录结构与路由取舍（Rspress `_meta.json` 模式）
+
+本章节基于母版 `docs/04-directory/` 多级嵌套子目录 `nested/`，实测 **Rspress v2** 最具代表性的 **`_meta.json` 就近目录声明流派**：
+
+1. **`root: 'docs'` 单层内容隔离**：工程根目录 `README.md`、`rspress.config.ts` 与 `docs/` 正文完全隔离，静态资源统一放置在 `docs/public/` 下。
+2. **分层级 `_meta.json` 就近编排**：无需在中央配置文件里维护冗长的全站嵌套侧边栏，只需在 `docs/_meta.json`、`docs/04-directory/_meta.json` 与 `docs/04-directory/nested/_meta.json` 中就近声明当前目录的文件顺序与中文折叠分组标题（如 `"label": "嵌套子目录实测 (_meta.json)"`）。
+3. **相对路径互链完好**：Rspress 原生解析相对路径 Markdown 链接（如 `./nested/01-order-and-url.md`），兼顾本地编辑器点击跳转与线上路由自动转换。
+
+## 嵌套子文档实测入口
+
+- [进入子文档 A：排序前缀与 URL 纯净度权衡](/rspress/04-directory/nested/01-order-and-url.md)
+- [进入子文档 B：多级子目录与侧边栏同步机制](/rspress/04-directory/nested/02-sidebar-sync.md)
+
+
+
+---
+url: /rspress/04-directory/nested/01-order-and-url.md
+---
+
+> For AI agents: the complete documentation index is available at /rspress/llms.txt, the full documentation bundle is available at /rspress/llms-full.txt.
+
+# 嵌套子页 A：排序前缀与 URL 纯净度权衡
+
+在 Rspress 中，既可以保留母版的 `01-order-and-url.md` 文件名前缀让 IDE 文件树天然有序，也可以去掉数字前缀完全交由同级 `_meta.json` 数组顺序决定侧边栏先后次序，而无需改动各页面的 Frontmatter `order` 数值。
+
+- [返回母版《04. 目录结构与路由取舍》](/rspress/04-directory/index.md)
+- [下一篇：《嵌套子页 B：多级子目录与侧边栏同步机制》](/rspress/04-directory/nested/02-sidebar-sync.md)
+
+
+
+---
+url: /rspress/04-directory/nested/02-sidebar-sync.md
+---
+
+> For AI agents: the complete documentation index is available at /rspress/llms.txt, the full documentation bundle is available at /rspress/llms-full.txt.
+
+# 嵌套子页 B：多级子目录与侧边栏同步机制
+
+Rspress 采用分散式 `_meta.json` 约定：在 `docs/04-directory/_meta.json` 中将子目录 `nested` 声明为 `{ "type": "dir", "name": "nested", "label": "嵌套子目录实测 (_meta.json)" }`，即可为英文目录名指定清晰的中文侧边栏分组，相比集中手写整棵侧边栏树更易多人协作维护。
+
+- [返回上一篇：《嵌套子页 A：排序前缀与 URL 纯净度权衡》](/rspress/04-directory/nested/01-order-and-url.md)
+- [返回母版《04. 目录结构与路由取舍》](/rspress/04-directory/index.md)
+
+
+
+---
+url: /rspress/index.md
+---
+
+> For AI agents: the complete documentation index is available at /rspress/llms.txt, the full documentation bundle is available at /rspress/llms-full.txt.
+
+# Rspress v2 静态网站生成基准实测
+
+本站点由独立仓库 [`page2401/rspress`](https://github.com/page2401/rspress) 构建，基于主仓库 `page2401.github.io/docs/` 的标准 GFM 原始母版派生适配而来，用于量化字节跳动开源的 **Rspress v2 (`2.1.4`)** 在双轨提示容器、Mermaid 12 图表、KaTeX 公式与多级 `_meta.json` 目录编排上的真实工程表现。
+
+## 五大基准测试章节导航
+
+| 章节路径                                              | 测试维度                  | Rspress v2 (`2.1.4`) 核心实测特征                                                                                           |
+| :------------------------------------------------ | :-------------------- | :-------------------------------------------------------------------------------------------------------------------- |
+| [`01. 专属标注与元数据`](/rspress/01-annotations.md)      | 专属标注与双轨语法             | 原生同时支持 `:::note` / `:::tip` / `:::warning` / `:::danger` 容器、`<details>` 以及 GitHub `> [!NOTE]` 警报语法；MDX 3 同样约束裸 `<id>` |
+| [`02. 流程图与时序图`](/rspress/02-diagrams.md)          | 流程图与时序图               | 接入 `rspress-plugin-mermaid@2.0.0` + `mermaid@12.3.0`，零正文改动渲染复杂流程图与时序图                                                 |
+| [`03. 数学公式排版`](/rspress/03-math.md)               | 数学公式排版                | 接入 `rspress-plugin-katex@1.0.1` + 本地打包 `katex@0.19.1` 样式与字体，构建期编译 HTML 公式结构                                           |
+| [`04. 目录结构与路由取舍`](/rspress/04-directory/index.md) | 目录结构与 `_meta.json`    | `root: 'docs'` 隔离 + 各层级 `_meta.json` 就近声明章节顺序与中文分组标题                                                                  |
+| [`05. 高阶代码块与语法高亮`](/rspress/05-code-blocks.md)    | Shiki 4 代码块与 `<Tabs>` | 开箱集成 `title="..."`、`{3,7-9}` 与保留词法着色的 `// [!code ++]` Diff；`.mdx` 下调用 `@rspress/core/theme` `<Tabs>`                  |
+
+## 子模块精确锁定版本档案
+
+| 依赖模块                     | 精确锁定版本   | 在本子站中的职责                                                 |
+| :----------------------- | :------- | :------------------------------------------------------- |
+| `@rspress/core`          | `2.1.4`  | 基于 Rspack / Rsbuild + React 19 + Shiki 4 的高速文档框架         |
+| `rspress-plugin-katex`   | `1.0.1`  | Rspress v2 数学公式编译插件（底层基于 `remark-math` + `rehype-katex`） |
+| `rspress-plugin-mermaid` | `2.0.0`  | Rspress v2 Mermaid 代码块编译与客户端渲染插件                         |
+| `katex`                  | `0.19.1` | 数学排版样式表与本地打包 Webfont 字体资源                                |
+| `mermaid`                | `12.3.0` | 第 12 代流程图、时序图与状态机渲染引擎                                    |
+| `react` / `react-dom`    | `19.3.1` | 底层 UI 渲染运行时                                              |
+
+

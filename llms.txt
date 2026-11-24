@@ -1,0 +1,25 @@
+# Rspress v2 (2.1.4)
+
+> SSG Benchmark Submodule — Rspress 2.1.4 + _meta.json + KaTeX + Mermaid 12
+
+## 01. 专属标注
+
+- [01. 专属标注与元数据](/rspress/01-annotations.md): 测试 Rspress v2 (2.1.4) 的 Frontmatter、三冒号提示容器、原生 HTML <details> 与 GFM Alerts 零改造兼容性。
+
+## 02. 流程图
+
+- [02. 流程图与时序图](/rspress/02-diagrams.md): 标准 GFM 母版派生：通过 rspress-plugin-mermaid@2.0.0 + mermaid@12.3.0 渲染复杂子图、时序图与状态机。
+
+## 03. 数学公式
+
+- [03. 数学公式排版](/rspress/03-math.md): 标准 GFM 母版派生：通过 rspress-plugin-katex@1.0.1 + 本地 katex@0.19.1 测试数学公式排版。
+
+## 05. 代码高亮
+
+- [05. 高阶代码块与语法高亮](/rspress/05-code-blocks.md): 测试 Rspress v2 (2.1.4) 内置 Shiki 4 与 @shikijs/transformers 的 title 标题栏、{3,7-9} 行高亮、保留词法着色的 [!code ++] Diff 与 <Tabs> 命令组。
+
+## Others
+
+- [04. 目录结构与路由取舍](/rspress/04-directory/index.md): 实测 Rspress v2 的 root: 'docs' 单层隔离与各层级 _meta.json 就近编排机制。
+- [嵌套子页 A：排序前缀与 URL 纯净度权衡](/rspress/04-directory/nested/01-order-and-url.md): 在 Rspress 中，既可以保留母版的 01-order-and-url.md 文件名前缀让 IDE 文件树天然有序，也可以去掉数字前缀完全交由同级 _meta.json 数组顺序决定侧边栏先后次序，而无需改动各页面的 Frontmatter order 数值。 返回母版《04. 目录结构与路由取舍》下一篇：《嵌套子页 B：多级子目录与侧边栏同步机制》
+- [嵌套子页 B：多级子目录与侧边栏同步机制](/rspress/04-directory/nested/02-sidebar-sync.md): Rspress 采用分散式 _meta.json 约定：在 docs/04-directory/_meta.json 中将子目录 nested 声明为 { "type": "dir", "name": "nested", "label": "嵌套子目录实测 (_meta.json)" }，即可为英文目录名指定清晰的中文侧边栏分组，相比集中手写整棵侧边栏树更易多人协作维护。 返回上一篇：《嵌套子页 A：排序前缀与 URL 纯净度权衡》返回母版《04. 目录结构与路由取舍》
